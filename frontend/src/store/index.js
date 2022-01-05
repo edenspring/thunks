@@ -1,5 +1,5 @@
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
-
+import thunk from 'redux-thunk';
 // 2. Import redux-thunk
 
 import articleReducer from './articleReducer';
@@ -17,10 +17,10 @@ if (process.env.NODE_ENV !== 'production') {
   const composeEnhancers =
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ trace: true }) || compose;
   // 3. Add the middleware function to our store
-  enhancer = composeEnhancers(applyMiddleware(logger));
+  enhancer = composeEnhancers(applyMiddleware(thunk, logger));
 } else {
   // 3. Add the middleware function to our store
-  enhancer = applyMiddleware();
+  enhancer = applyMiddleware(thunk);
 }
 
 const configureStore = (preloadedState) => {
