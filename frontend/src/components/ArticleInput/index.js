@@ -2,7 +2,8 @@ import { useState } from "react";
 import { nanoid } from "nanoid";
 import { useDispatch } from "react-redux";
 // 8. Replace import of action creator with thunk creator
-import { addArticle } from "../../store/articleReducer";
+// import { addArticle } from "../../store/articleReducer";
+import { createArticle } from "../../store/articleReducer";
 import "./ArticleInput.css";
 
 const ArticleInput = () => {
@@ -17,18 +18,20 @@ const ArticleInput = () => {
     setImageUrl("");
     setBody("");
   };
-
-  const handleSubmit = (e) => {
+  //make it async
+  const handleSubmit = async(e) => {
     e.preventDefault();
     const newArticle = {
-      id: nanoid(),
+      //remember to remove id
+      // id: nanoid(),
       title,
       body,
       imageUrl,
     };
 
     // 8. Dispatch the return value of the thunk creator instead (the thunk)
-    dispatch(addArticle(newArticle));
+    const thunkSpatch = await dispatch(createArticle(newArticle));
+    console.log(thunkSpatch)
     reset();
   };
 

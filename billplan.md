@@ -72,13 +72,86 @@ https://create-react-app.dev/docs/proxying-api-requests-in-development/
 - add it to middleware, we want it in both production and not production
 - don't need to expose stuff in console with logger to our users
 # look at store/articleReducer.js
-- talk about parens if you wanna but meh
+- talk about parens in action creator if you wanna but meh
 - stuff is pretty much the same
 - time to make a thunk creator for our GET request
 - name it something contextual to the application, something that makes sense
-- its a function that returns a function
-# components/ArticleList
-- its about to get thunky
-- rather than dispatching our 
+- its a function that returns a function, return function takes in dispatch as 
+  first param, but can also take getState
+  - useful for something like isLoading, block fetches if loaded
+- return function can also be async, and pretty much always will be so that we
+  don't have to do any promise chaining
+- check out backend readme for routes
+```js
+export const getArticles = () => async (dispatch) => {
+  const response = await fetch('/api/articles');
+  console.log(response)
+}
+```
+- when testing in browser
+```js
+store.dispatch(articleActions.getArticles())
+```
+- convert response to data
+- console log data
+- mention about needing to refresh
+- now it's time to dispatch loadArticles
+
+# uh oh spaghetti ohs
+- notice we're getting an error now, but why? well lets find out
+- debugger? gonna look crazy, but look what you can do!
+- or, you know, console.log it. you'll have to scroll above the error to see it
+- we know the error is in our action.articles, but why? well, thinking back to
+  yesterday's lecture, we might be dispatching our action creator somehwere and
+  not providing an argument
+- take a look at ArticleList, our useEffect is dispatching our loadArticles
+  action creator
+- how can we fix
+- dispatch the thunk creator, the function that returns the thunk
+- also consider removing your debugger
+- how does dispatch do all this? getArticles will return another function, when
+  our redux-thunk middleware sees that our dispatch has been handed something 
+  that is typeof function it says hold up and instead invokes that function
+  (the thunk) passing in both dispatch and getState. getState, you guessed it,
+  gets our state.
+
+# Why they not render when clicky?
+- think about all the times we've run into mismatched data types with strict
+  equality. in our SingleArticle component we're getting a string back from our
+  useParams, however our ids are numbers
+- let's use the unary operator (not ==, thien.)
+
+# posting -- with thunks
+- check out backend readme for routes
+- maybe check the docs if you don't remember how to post
+```js
+export const createArticle = (payload) => async (dispatch) => {
+  const response = await fetch('/api/articles',{
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  })
+}
+```
+- can console.log the response if we want, will first need to replace dispatch
+  action in ArticleInput with this new thunk creator
+- see the response? and there's the data?
+- on refresh we'll see what we post to the db, but how to make dynamic
+- glad you asked
+- build out the rest of the thunk to dispatch our data with the addArticle
+  action creator
+
+# using what we return from our dispatch in our component
+- we'll need to make our handle submit async, dispatch gonna return a promise
+- i guess we could show that first
+
+# quamstions
+- gimme your questions and i'll give you some lies
+
+# maybe refactor with normalized state. maybe. i dunno. maybe.
+- talk a bit about why we should do that
+- refactor using reduce, like a boss. or forEach, like a coward. be a boss.
+
+
 
 

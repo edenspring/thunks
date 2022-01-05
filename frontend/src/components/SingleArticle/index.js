@@ -1,11 +1,14 @@
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import './SingleArticle.css';
 
-const SingleArticle = ({ articles }) => {
+// const SingleArticle = ({ articles }) => {
+const SingleArticle = () => {
   const { id } = useParams();
+  const singleArticle = useSelector(state => state.articleState.entries[id])
 
-  const singleArticle = articles.find((article) => article.id === id);
+  // const singleArticle = articles.find((article) => article.id === +id);
 
   return (
     <div className="singleArticle">
